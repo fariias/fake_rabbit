@@ -1,0 +1,29 @@
+from setuptools import setup, find_packages
+
+with open('README.md') as readme_file:
+    README = readme_file.read()
+
+with open('HISTORY.md') as history_file:
+    HISTORY = history_file.read()
+
+setup_args = dict(
+    name='fakerabbit',
+    version='0.1.0',
+    description='A simple lib to make fake objects using SQLAlchemy',
+    long_description_content_type="text/markdown",
+    long_description=README + '\n\n' + HISTORY,
+    license='MIT',
+    packages=find_packages(),
+    author='Josenildo Junior',
+    author_email='josenildoaf@gmail.com',
+    keywords=['Factory', 'Fake', 'SQLAlchemy', 'Tests'],
+    url='https://github.com/fariias/fake_rabbit.git',
+    download_url='https://github.com/fariias/fake_rabbit.git'
+)
+
+install_requires = [
+    'SQLAlchemy'
+]
+
+if __name__ == '__main__':
+    setup(**setup_args, install_requires=install_requires)
