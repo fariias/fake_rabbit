@@ -3,15 +3,12 @@ from setuptools import setup, find_packages
 with open('README.md') as readme_file:
     README = readme_file.read()
 
-with open('HISTORY.md') as history_file:
-    HISTORY = history_file.read()
-
 setup_args = dict(
     name='fakerabbit',
-    version='0.1.0',
+    version='0.1.2',
     description='A simple lib to make fake objects using SQLAlchemy',
     long_description_content_type="text/markdown",
-    long_description=README + '\n\n' + HISTORY,
+    long_description=README,
     license='MIT',
     packages=find_packages(),
     author='Josenildo Junior',
