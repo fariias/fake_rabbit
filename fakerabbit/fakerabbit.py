@@ -17,15 +17,17 @@ class FakeRabbit:
         self.db_session = db_session
 
     # Factory
-    def make(self, cls, quantity: int = 1):
+    def make(self, cls, quantity: int = 1, recursive_mode: bool = True):
+
+        # make (quantity) (cls) objects
         for i in range(quantity):
-            obj = self.instantiate_object(cls)
+            obj = self.instantiate_object(cls, recursive_mode)
             self.db_session.add(obj)
 
         self.db_session.commit()
         return obj
 
-    def instantiate_object(self, cls):
+    def instantiate_object(self, cls, recursive_mode: bool):
         obj = cls()
         attr_names = self.get_model_class_attribute_names(cls)
 
@@ -36,12 +38,12 @@ class FakeRabbit:
                 continue
 
             if column.foreign_keys:
-                foreign_cls = self.get_foreign_key_class_by_column(column)
+                if recursive_mode:
+                    foreign_cls = self.get_foreign_key_class_by_column(column)
+                    foreign_obj = self.make(foreign_cls)
 
-                foreign_obj = self.make(foreign_cls)
-
-                foreign_primary_key = inspect(foreign_obj).identity[0]
-                setattr(obj, column.key, foreign_primary_key)
+                    foreign_primary_key = inspect(foreign_obj).identity[0]
+                    setattr(obj, column.key, foreign_primary_key)
             else:
 
                 # Getting a fake value by class type, ex: Integer = 3
@@ -89,30 +91,35 @@ class FakeRabbit:
     #################
     # Fake generators
     #################
-    def random_int(self):
+    @staticmethod
+    def make_int():
         return random.randint(1, 9999)
 
-    def random_str(self, length=10):
+    @staticmethod
+    def make_str(length=10):
         fake_string = ''.join(random.choice(string.ascii_lowercase) for i in range(length))
         return fake_string
 
-    def random_datetime(self):
+    @staticmethod
+    def make_datetime():
         return datetime.datetime.now()
 
-    def random_largebinary(self):
+    @staticmethod
+    def make_large_binary():
         return bytes(2020)
 
-    def random_boolean(self):
+    @staticmethod
+    def make_boolean():
         return random.choice([True, False])
 
     def alchemy_type_generator(self, class_type: T):
 
         alchemy_types = {
-            Integer: self.random_int,
-            String: self.random_str,
-            DateTime: self.random_datetime,
-            LargeBinary: self.random_largebinary,
-            Boolean: self.random_boolean
+            Integer: self.make_int,
+            String: self.make_str,
+            DateTime: self.make_datetime,
+            LargeBinary: self.make_large_binary,
+            Boolean: self.make_boolean
         }
 
         alchemy_type = alchemy_types.get(class_type)
