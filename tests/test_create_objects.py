@@ -23,5 +23,19 @@ class TestCreateObjects(BaseTest):
 
         self.assertEqual(10, len(users_in_db))
 
+    def test_create_user_with_recursive_mode(self):
+        """Test create a object with foreign key objects (default)"""
+        self.user = self.fake_rabbit.make(User)
+
+        self.assertIsNotNone(self.user.addressid)
+
+    def test_create_user_without_recursive_mode(self):
+        """Test create a object without foreign key objects"""
+
+        self.user = self.fake_rabbit.make(User, recursive_mode=False)
+
+        self.assertIsNone(self.user.addressid)
+
+
 
 
