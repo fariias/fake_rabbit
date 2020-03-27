@@ -5,7 +5,7 @@ with open('README.md') as readme_file:
 
 setup_args = dict(
     name='fakerabbit',
-    version='0.2.2',
+    version='0.3.2',
     description='A simple lib to make fake objects using SQLAlchemy',
     long_description_content_type="text/markdown",
     long_description=README,

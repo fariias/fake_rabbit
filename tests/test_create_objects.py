@@ -36,6 +36,20 @@ class TestCreateObjects(BaseTest):
 
         self.assertIsNone(self.user.addressid)
 
+    def test_create_user_with_default_values(self):
+        """Test create a object using default values"""
+
+        default_fullname = 'Tony Stark'
+
+        self.user = self.fake_rabbit.make(User, recursive_mode=False, fullname=default_fullname)
+
+        self.assertEqual(self.user.fullname, default_fullname)
+
+        users_in_db = self.session.query(User).filter(User.fullname == default_fullname).all()
+        self.assertEqual(1, len(users_in_db))
+
+
+
 
 
 

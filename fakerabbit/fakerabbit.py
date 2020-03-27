@@ -17,22 +17,25 @@ class FakeRabbit:
         self.db_session = db_session
 
     # Factory
-    def make(self, cls, quantity: int = 1, recursive_mode: bool = True):
+    def make(self, cls, quantity: int = 1, recursive_mode: bool = True, *args, **kwargs):
 
         # make (quantity) (cls) objects
         for i in range(quantity):
-            obj = self.instantiate_object(cls, recursive_mode)
+            obj = self.instantiate_object(cls, recursive_mode, *args, **kwargs)
             self.db_session.add(obj)
 
         self.db_session.commit()
         return obj
 
-    def instantiate_object(self, cls, recursive_mode: bool):
-        obj = cls()
+    def instantiate_object(self, cls, recursive_mode: bool, *args, **kwargs):
+        obj = cls(*args, **kwargs)
         attr_names = self.get_model_class_attribute_names(cls)
 
         for column in attr_names:
             column = column.columns[0]
+
+            if getattr(obj, column.name):
+                continue
 
             if column.primary_key:
                 continue
